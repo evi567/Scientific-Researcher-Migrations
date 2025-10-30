@@ -58,6 +58,14 @@ def setup_page():
             margin-bottom: 1rem;
         }}
         
+        .metric-card h3, .metric-card h4, .metric-card p, .metric-card li, .metric-card ul {{
+            color: #E8E8E8;
+        }}
+        
+        .metric-card strong, .metric-card em {{
+            color: #FAFAFA;
+        }}
+        
         /* Títulos principales */
         .main-title {{
             font-size: 2.5rem;
@@ -77,7 +85,7 @@ def setup_page():
         /* Secciones */
         .section-header {{
             background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            color: white;
+            color: white !important;
             padding: 1rem 1.5rem;
             border-radius: 8px;
             margin: 2rem 0 1rem 0;
@@ -118,30 +126,7 @@ def setup_page():
             overflow: hidden;
         }}
         
-        /* Alertas y mensajes */
-        .alert-info {{
-            background-color: rgba(46, 134, 171, 0.25);
-            border-left: 4px solid var(--primary-color);
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }}
-        
-        .alert-success {{
-            background-color: rgba(6, 167, 125, 0.25);
-            border-left: 4px solid var(--success-color);
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }}
-        
-        .alert-warning {{
-            background-color: rgba(241, 143, 1, 0.25);
-            border-left: 4px solid var(--accent-color);
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }}
+        /* NO aplicar estilos globales a elementos nativos de Streamlit */
         
         /* Tablas */
         .dataframe {{

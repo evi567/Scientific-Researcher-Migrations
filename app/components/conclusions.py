@@ -360,29 +360,29 @@ def render_conclusions(data_loader: DataLoader, filters: dict):
     st.markdown('<div class="section-header">💡 Reflexión Final</div>', unsafe_allow_html=True)
     
     st.markdown("""
-    <div class="metric-card" style="background: linear-gradient(135deg, rgba(46, 134, 171, 0.2), rgba(162, 59, 114, 0.2));">
-        <h3 style="color: #2E86AB;">🌟 De la Fuga a la Circulación</h3>
-        <p style="font-size: 1.1rem; line-height: 1.8; color: #FAFAFA;">
-            La <strong>migración científica</strong> es un fenómeno complejo que refleja desigualdades globales 
+    <div class="metric-card" style="background: linear-gradient(135deg, #2E3440 0%, rgba(46, 134, 171, 0.4) 50%, rgba(162, 59, 114, 0.4) 100%), linear-gradient(180deg, rgba(30, 33, 40, 0.8), rgba(30, 33, 40, 0.9));">
+        <h3 style="color: #4FC3F7;">🌟 De la Fuga a la Circulación</h3>
+        <p style="font-size: 1.1rem; line-height: 1.8; color: #E8E8E8;">
+            La <strong style="color: #FFFFFF;">migración científica</strong> es un fenómeno complejo que refleja desigualdades globales 
             en desarrollo, pero también oportunidades de colaboración internacional.
         </p>
-        <p style="font-size: 1.1rem; line-height: 1.8; color: #FAFAFA;">
-            El desafío está en transformar la <em>"fuga de cerebros"</em> en 
-            <strong>"circulación de conocimiento"</strong>, donde el talento beneficie tanto a países 
+        <p style="font-size: 1.1rem; line-height: 1.8; color: #E8E8E8;">
+            El desafío está en transformar la <em style="color: #FFFFFF;">"fuga de cerebros"</em> en 
+            <strong style="color: #FFFFFF;">"circulación de conocimiento"</strong>, donde el talento beneficie tanto a países 
             emisores como receptores mediante:
         </p>
-        <ul style="font-size: 1.05rem; color: #FAFAFA;">
-            <li>🤝 Redes de colaboración transnacional</li>
-            <li>🔬 Transferencia tecnológica bidireccional</li>
-            <li>📚 Open Science y democratización del conocimiento</li>
-            <li>⚖️ Políticas científicas equitativas</li>
-            <li>🌍 Financiamiento global de ciencia básica</li>
+        <ul style="font-size: 1.05rem; color: #E8E8E8; list-style-type: none; padding-left: 0;">
+            <li style="margin-bottom: 0.5rem;">🤝 Redes de colaboración transnacional</li>
+            <li style="margin-bottom: 0.5rem;">🔬 Transferencia tecnológica bidireccional</li>
+            <li style="margin-bottom: 0.5rem;">📚 Open Science y democratización del conocimiento</li>
+            <li style="margin-bottom: 0.5rem;">⚖️ Políticas científicas equitativas</li>
+            <li style="margin-bottom: 0.5rem;">🌍 Financiamiento global de ciencia básica</li>
         </ul>
-        <p style="font-size: 1.2rem; font-weight: 600; color: #06A77D; margin-top: 1rem;">
+        <p style="font-size: 1.2rem; font-weight: 600; color: #26E7A6; margin-top: 1rem; text-shadow: 0 0 10px rgba(38, 231, 166, 0.3);">
             "El conocimiento es el único bien que aumenta cuando se comparte." 💡
         </p>
-        <p style="font-size: 1.1rem; margin-top: 1rem; color: #FAFAFA;">
-            Quizás hoy, podemos aspirar a que el científico tenga <strong>muchas patrias</strong>, 
+        <p style="font-size: 1.1rem; margin-top: 1rem; color: #E8E8E8;">
+            Quizás hoy, podemos aspirar a que el científico tenga <strong style="color: #FFFFFF;">muchas patrias</strong>, 
             conectadas por la búsqueda común del conocimiento.
         </p>
     </div>

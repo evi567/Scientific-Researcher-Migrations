@@ -298,9 +298,55 @@ def render_emitters_receivers(df: pd.DataFrame, data_loader: DataLoader, filters
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)'
     )
-    fig_net.add_vline(x=0, line_dash="dash", line_color="gray", annotation_text="Balance = 0")
     
     st.plotly_chart(fig_net, use_container_width=True, config=PLOTLY_CONFIG)
+    
+    # NUEVA MEJORA 1: Histogramas Superpuestos - Distribución de flujos
+    st.markdown("### 📊 Comparación de Distribuciones: Emigración vs Inmigración")
+    st.markdown("Análisis de la distribución de flujos migratorios entre países emisores y receptores")
+    
+    # Preparar datos agregados por país
+    emigration_by_country = df.groupby('origin')['n_researchers'].sum().reset_index()
+    emigration_by_country.columns = ['country', 'total']
+    
+    immigration_by_country = df.groupby('destination')['n_researchers'].sum().reset_index()
+    immigration_by_country.columns = ['country', 'total']
+    
+    # Crear histograma superpuesto
+    fig_overlay = go.Figure()
+    
+    fig_overlay.add_trace(go.Histogram(
+        x=emigration_by_country['total'],
+        name='Emigración',
+        marker_color=THEME_COLORS['warning'],
+        opacity=0.7,
+        nbinsx=30
+    ))
+    
+    fig_overlay.add_trace(go.Histogram(
+        x=immigration_by_country['total'],
+        name='Inmigración',
+        marker_color=THEME_COLORS['success'],
+        opacity=0.7,
+        nbinsx=30
+    ))
+    
+    fig_overlay.update_layout(
+        title='Distribución de Flujos Migratorios por País',
+        xaxis_title='Total de Investigadores',
+        yaxis_title='Número de Países',
+        barmode='overlay',
+        template='plotly_dark',
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        height=500,
+        legend=dict(x=0.7, y=0.95),
+        hovermode='x unified'
+    )
+    
+    fig_overlay.update_traces(marker_line_width=1, marker_line_color='rgba(255,255,255,0.3)')
+    
+    st.plotly_chart(fig_overlay, use_container_width=True, config=PLOTLY_CONFIG)
     
     # Tabla completa de saldo migratorio
     with st.expander("📊 Ver tabla completa de saldos migratorios"):
@@ -516,6 +562,70 @@ def render_regional_analysis(df: pd.DataFrame, data_loader: DataLoader):
         )
         
         st.plotly_chart(fig_im_region, use_container_width=True, config=PLOTLY_CONFIG)
+    
+    # NUEVA MEJORA 2: Gráfico 3D - Emigración vs Inmigración vs Saldo Neto
+    st.markdown("### 🌍 Análisis 3D: Emigración, Inmigración y Saldo Neto por País")
+    st.markdown("Visualización tridimensional interactiva de los flujos migratorios agregados por país")
+    
+    # Calcular totales por país
+    net_migration_full = data_loader.compute_net_migration(df)
+    
+    # Filtrar países con flujo significativo para mejor visualización
+    significant_countries = net_migration_full[net_migration_full['total_flow'] > 100].copy()
+    
+    # Crear scatter 3D
+    fig_3d = px.scatter_3d(
+        significant_countries,
+        x='emigration',
+        y='immigration',
+        z='net_balance',
+        color='type',
+        size='total_flow',
+        hover_name='country',
+        hover_data=['migration_ratio'],
+        color_discrete_map={'Atractor': THEME_COLORS['success'], 'Exportador': THEME_COLORS['warning']},
+        title='Espacio 3D: Emigración × Inmigración × Saldo Neto',
+        labels={
+            'emigration': 'Emigración Total',
+            'immigration': 'Inmigración Total',
+            'net_balance': 'Saldo Neto',
+            'total_flow': 'Flujo Total',
+            'type': 'Tipo de País'
+        }
+    )
+    
+    # Añadir plano de referencia (balance = 0)
+    fig_3d.update_layout(
+        template='plotly_dark',
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        height=700,
+        scene=dict(
+            xaxis=dict(title='Emigración', gridcolor='rgba(255,255,255,0.1)', showbackground=True, backgroundcolor='rgba(0,0,0,0.5)'),
+            yaxis=dict(title='Inmigración', gridcolor='rgba(255,255,255,0.1)', showbackground=True, backgroundcolor='rgba(0,0,0,0.5)'),
+            zaxis=dict(title='Saldo Neto', gridcolor='rgba(255,255,255,0.1)', showbackground=True, backgroundcolor='rgba(0,0,0,0.5)'),
+            camera=dict(
+                eye=dict(x=1.5, y=1.5, z=1.3)
+            )
+        )
+    )
+    
+    st.plotly_chart(fig_3d, use_container_width=True, config=PLOTLY_CONFIG)
+    
+    st.markdown("""
+    <div class="alert-info">
+        <h4>💡 Interpretación del gráfico 3D:</h4>
+        <ul>
+            <li><strong>Eje X (Emigración):</strong> Cuántos investigadores salen del país</li>
+            <li><strong>Eje Y (Inmigración):</strong> Cuántos investigadores llegan al país</li>
+            <li><strong>Eje Z (Saldo Neto):</strong> Balance final (inmigración - emigración)</li>
+            <li><strong>Países en zona superior (Z+):</strong> Atractores netos de talento</li>
+            <li><strong>Países en zona inferior (Z-):</strong> Exportadores netos de talento</li>
+            <li><strong>Tamaño de la burbuja:</strong> Volumen total de flujo migratorio</li>
+        </ul>
+        <p><em>💡 Tip: Haz clic y arrastra para rotar el gráfico, usa scroll para zoom</em></p>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # =============================================================================
@@ -701,6 +811,72 @@ def render_economic_correlation(df_flows: pd.DataFrame, df_wdi: pd.DataFrame, da
             <em>compromiso específico con ciencia</em>, no solo riqueza general.</p>
         </div>
         """, unsafe_allow_html=True)
+    
+    # NUEVA MEJORA 3: Parallel Coordinates - Análisis multivariable
+    st.markdown("### 🎨 Análisis Multivariable: Parallel Coordinates")
+    st.markdown("Visualización de relaciones simultáneas entre múltiples variables económicas y migratorias")
+    
+    # Preparar datos para parallel coordinates (tomar muestra si hay muchos)
+    parallel_data = migration_wdi[
+        migration_wdi['gdp_per_capita'].notna() &
+        migration_wdi['rd_expenditure_pct'].notna() &
+        migration_wdi['net_balance'].notna()
+    ].copy()
+    
+    # Normalizar algunas variables para mejor visualización
+    parallel_data['net_balance_scaled'] = parallel_data['net_balance'] / 1000  # escalar a miles
+    parallel_data['population_millions'] = parallel_data['population'] / 1000000
+    parallel_data['type_numeric'] = parallel_data['type'].map({'Atractor': 1, 'Exportador': 0})
+    
+    # Tomar muestra si hay demasiados países
+    if len(parallel_data) > 100:
+        parallel_sample = parallel_data.sample(n=100, random_state=42)
+    else:
+        parallel_sample = parallel_data
+    
+    fig_parallel = px.parallel_coordinates(
+        parallel_sample,
+        dimensions=['gdp_per_capita', 'rd_expenditure_pct', 'net_balance_scaled', 
+                   'immigration', 'emigration', 'population_millions'],
+        color='type_numeric',
+        color_continuous_scale=[(0, THEME_COLORS['warning']), (1, THEME_COLORS['success'])],
+        labels={
+            'gdp_per_capita': 'PIB per Cápita',
+            'rd_expenditure_pct': 'I+D (% PIB)',
+            'net_balance_scaled': 'Saldo Neto (miles)',
+            'immigration': 'Inmigración',
+            'emigration': 'Emigración',
+            'population_millions': 'Población (M)',
+            'type_numeric': 'Tipo'
+        },
+        title='Análisis Multidimensional: Variables Económicas y Migratorias'
+    )
+    
+    fig_parallel.update_layout(
+        template='plotly_dark',
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        height=600,
+        coloraxis_colorbar=dict(
+            title="Tipo",
+            tickvals=[0, 1],
+            ticktext=["Exportador", "Atractor"]
+        )
+    )
+    
+    st.plotly_chart(fig_parallel, use_container_width=True, config=PLOTLY_CONFIG)
+    
+    st.markdown("""
+    <div class="alert-info">
+        <h4>💡 Cómo interpretar este gráfico:</h4>
+        <ul>
+            <li><strong>Líneas verdes:</strong> Países atractores de talento</li>
+            <li><strong>Líneas naranjas:</strong> Países exportadores de talento</li>
+            <li>Observa patrones: países atractores suelen tener valores altos en PIB, I+D e inmigración</li>
+            <li>Las líneas que se cruzan en direcciones opuestas indican perfiles muy diferentes</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # =============================================================================
