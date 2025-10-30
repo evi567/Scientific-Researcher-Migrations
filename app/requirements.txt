@@ -1,0 +1,21 @@
+# Panel de Inteligencia: Migración Científica Global
+# ====================================================
+# Dependencias de Python para la aplicación Streamlit
+
+# Framework principal
+streamlit>=1.28.0
+
+# Manipulación y análisis de datos
+pandas>=2.0.0
+numpy>=1.24.0
+statsmodels>=0.14.0
+scikit-learn>=1.3.0
+
+# Visualización
+plotly>=5.17.0
+
+# Formatos de datos
+pyarrow>=14.0.0  # Para lectura de Parquet
+
+# Utilidades
+pathlib2>=2.3.7  # Compatibilidad con rutas
